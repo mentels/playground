@@ -1,0 +1,19 @@
+{application, door_lock,
+ [{description, "An OTP application demonstrating gen_statem"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, { door_lock_app, []}},
+  {applications,
+   [kernel,
+    stdlib
+   ]},
+  {env,[
+        {code, [1,2,3]},
+        {backend, door_lock_state_based}
+       ]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, ["Apache 2.0"]},
+  {links, []}
+ ]}.
