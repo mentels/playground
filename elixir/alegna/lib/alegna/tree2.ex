@@ -28,9 +28,9 @@ defmodule Alegna.Tree do
 
   Leafs can only exist at the last level of a Tree.
   """
-  @type tnode :: Node.t | Leaf.t
+  @type tnode :: Node.t() | Leaf.t()
 
-  @typedoc  """
+  @typedoc """
   An attribute of a node indicating at which level it is in the tree
 
   0 means a node is a Leaf.
@@ -40,7 +40,7 @@ defmodule Alegna.Tree do
   @typedoc """
   The hash of a node
   """
-  @type thash :: String.t
+  @type thash :: String.t()
 
   defstruct size: 0, root: nil
   @type t :: %Tree{size: tsize, root: tnode}
@@ -48,16 +48,19 @@ defmodule Alegna.Tree do
   defmodule Leaf do
     @enforce_keys [:hash]
     defstruct height: 0, hash: nil
-    @type t :: %Leaf{height: Tree.theight, hash: String.t}
+    @type t :: %Leaf{height: Tree.theight(), hash: String.t()}
   end
 
   defmodule Node do
     @enforce_keys [:height, :hash, :left, :right]
     defstruct [:height, :hash, :left, :right]
-    @type t :: %Node{height: Tree.theight,
-                     hash: Tree.thash,
-                     left: Tree.tnode,
-                     right: Tree.tnode}
+
+    @type t :: %Node{
+            height: Tree.theight(),
+            hash: Tree.thash(),
+            left: Tree.tnode(),
+            right: Tree.tnode()
+          }
   end
 
   @doc "Creates an empty Tree"
@@ -78,15 +81,17 @@ defmodule Alegna.Tree do
     hash = hash(value)
     {%Tree{tree | size: 1, root: leaf(hash)}, hash}
   end
+
   def add_node(%Tree{size: s, root: r} = tree, value) do
     hash = hash(value)
-    {%Tree{tree | size: s+2, root: add_value(s, r, hash)}, hash}
+    {%Tree{tree | size: s + 2, root: add_value(s, r, hash)}, hash}
   end
 
   defp add_node_on_top(left, right) do
     hash = concat_hashes(left.hash, right.hash)
-    %Node{height: left.height+1, hash: hash, left: left, right: right}
+    %Node{height: left.height + 1, hash: hash, left: left, right: right}
   end
+
   defp add_node_in_right_subtree(node, size, hash) do
     r_size = right_subtree_size(size, node.height)
     r_node = add_value(r_size, node.right, hash)
@@ -102,6 +107,7 @@ defmodule Alegna.Tree do
       add_node_in_right_subtree(node, size, hash)
     end
   end
+
   defp add_value(_size, %Leaf{} = node, hash) do
     add_node_on_top(node, leaf(hash))
   end
@@ -126,7 +132,7 @@ defmodule Alegna.Tree do
   @doc """
   Indicates the max number of nodes in a tree of the given `height`
   """
-  defp max_size(height), do: :math.pow(2, height+1) - 1
+  defp max_size(height), do: :math.pow(2, height + 1) - 1
 
   @doc """
   Indicates the max number of nodes in a right subtree of the given tree
@@ -135,10 +141,9 @@ defmodule Alegna.Tree do
   always it's max size
   """
   defp right_subtree_size(size, height) do
-    subtree_height = height-1
+    subtree_height = height - 1
     # from the current size subtract the size of the left subtree which is always
     # full and then subtract one for the root node
     size - max_size(subtree_height) - 1
   end
-
 end

@@ -1,0 +1,39 @@
+version: "3"
+services:
+  c1:
+    image: erlang:latest
+    # We're using the following command to bring up erlang shell
+    # for the example purposes, but in the other case the command
+    # will describe a running container
+    command: erl -noshell -name app@host1.com -setcookie cookie
+    container_name: host1.com
+    networks:
+      - net1
+
+  c2:
+    image: erlang:17.5
+    command: erl -noshell -name app@host2.com -setcookie cookie
+    container_name: host2.com
+
+  ejabberd:
+    image: rroemhild/ejabberd
+    ports:
+      - 5222:5222
+      - 5269:5269
+      - 5280:5280
+    container_name: host3.com
+    environment:
+      - ERLANG_NODE=ejabberd@host3.com
+      - XMPP_DOMAIN=test.io
+      - ERLANG_COOKIE=cookie
+      - EJABBERD_ADMINS=admin@test.io
+      - EJABBERD_USERS=admin@test.io:admin
+      - EJABBERD_SKIP_MODULES_UPDATE=true
+    networks:
+     - net1
+
+# We're using custom network setup, as it ships with a DNS
+# system which allows containers to communicate by hostnames.
+networks:
+  net1:
+    driver: bridge

@@ -1,0 +1,15 @@
+# after http://erlang.org/doc/man/compile.html
+source_after_parse_trans:
+	erlc -P simple.erl
+
+source_after_all_tans:
+	erlc -E simple.erl
+
+ast_after_parse_trans:
+	erlc +dpp simple.erl
+
+assembly:
+	erlc -S simple.erl
+
+core:
+	erlc +core +binary simple.erl

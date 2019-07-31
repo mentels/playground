@@ -1,0 +1,20 @@
+{attribute,1,file,{"simple.erl",1}}.
+{attribute,1,module,z}.
+{attribute,2,export,[{f,0}]}.
+{function,3,bin,0,
+    [{clause,3,[],[],
+         [{bin,4,
+              [{bin_element,4,
+                   {string,4,"Some binary value"},
+                   default,default}]}]}]}.
+{function,5,map,0,
+    [{clause,5,[],[],
+         [{map,6,
+              [{map_field_assoc,6,{atom,6,a},{integer,6,3}},
+               {map_field_assoc,7,{atom,7,b},{string,7,"Hello"}}]}]}]}.
+{function,8,f,0,
+          [{clause,8,[],[],
+                   [{tuple,9,
+                           [{call,9,{atom,9,bin},[]},
+                            {call,9,{atom,9,map},[]}]}]}]}.
+{eof,10}.
