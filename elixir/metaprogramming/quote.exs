@@ -21,9 +21,25 @@ defmodule BindQuoted do
   end
 end
 
+defmodule KeepLocation do
+  defmacro my_macro(opts) do
+    quote location: :keep do
+      IO.inspect(opts)
+    end
+  end
+end
+
 defmodule MyModule do
   require BindQuoted
 
   BindQuoted.my_macro(expr: DateTime.utc_now(), bind_quoted: true)
   BindQuoted.my_macro(expr: DateTime.utc_now(), bind_quoted: false)
+
+  require KeepLocation
+  # errors pointing to code in KeepLocation module due to the location: :keep
+  # ** (CompileError) quote.exs:27: undefined function opts/0
+  #   (stdlib 3.12) lists.erl:1354: :lists.mapfoldl/3
+  #   expanding macro: KeepLocation.my_macro/1
+  #   quote.exs:39: MyModule (module)
+  # KeepLocation.my_macro(hello: :world)
 end
